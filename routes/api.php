@@ -10,6 +10,7 @@ Route::post('register', [UserController::class, 'register']);
 Route::post('login', [UserController::class, 'login']);
 
 // Hago uso del middleware
+// En estos metodos necesito el token
 Route::group(['middleware' => ["auth:sanctum"]], function(){
 
     // Rutas para perfil de usuario y logout
