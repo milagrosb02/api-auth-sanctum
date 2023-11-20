@@ -124,9 +124,19 @@ class UserController extends Controller
 
 
 
-    public function profile()
+    public function profile(Request $request)
     {
-        
+
+        //dd($request->user());
+        return response()->json([
+
+            "status" => 0,
+
+            "msg" => "Acerca del perfil",
+
+            "data" => auth()->user()
+
+        ]);
 
     }
 
