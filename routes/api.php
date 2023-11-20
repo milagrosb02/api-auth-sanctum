@@ -13,7 +13,9 @@ Route::post('login', [UserController::class, 'login']);
 Route::group(['middleware' => ["auth:sanctum"]], function(){
 
     // Rutas para perfil de usuario y logout
-    
+    Route::get('user-profile', [UserController::class, 'profile']);
+
+    Route::get('user-profile', [UserController::class, 'logout']);
 
 });
 

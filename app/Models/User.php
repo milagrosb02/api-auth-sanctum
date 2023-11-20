@@ -17,10 +17,12 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
-        'password',
+        'password'
     ];
 
    
     // pongo timestamp en falso
-    public $timestamp = false;
+    public $timestamps = false;
+
+   
 }
