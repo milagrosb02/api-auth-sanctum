@@ -144,7 +144,17 @@ class UserController extends Controller
 
     public function logout()
     {
+
+        // elimino el token
+        auth()->user()->tokens()->delete();
         
+        return response()->json([
+
+            "status" => 1,
+
+            "msg" => "Logout"
+
+        ]);
 
     }
 
