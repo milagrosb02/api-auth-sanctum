@@ -6,15 +6,16 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
-
+use App\Http\Requests\RegisterRequest;
 
 // Utilizo 4 funciones para este proyecto: registro, login, perfil y logout
 
 
 class UserController extends Controller
 {
-    
-    public function register(Request $request)
+    /*
+
+         public function register(Request $request)
     {
 
         // valido primero que los datos sean correctos
@@ -56,7 +57,28 @@ class UserController extends Controller
 
     }
 
+      */    
 
+      public function register(RegisterRequest $request)
+      {
+
+        // valido los datos del register request
+        $validated = $request->validated();
+
+        User::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
+        ]);
+
+        return response()->json([
+            "status" => 1,
+            "msg" => "Registrado!"
+        ]);
+
+
+      }
+   
 
     public function login(Request $request)
     {
