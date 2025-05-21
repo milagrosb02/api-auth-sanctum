@@ -1,0 +1,317 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Auth Sanctum",
+    "description": "",
+    "version": "1.0.0"
+  },
+  "tags": [
+    {
+      "name": "Auth"
+    }
+  ],
+  "paths": {
+    "/api/register": {
+      "post": {
+        "summary": "Register",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "Auth"
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              },
+              "example": {
+                "name": "mili",
+                "email": "milagros2@gmail.com",
+                "password": "mili125",
+                "password_confirmation": "mili125"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "examples": {
+                  "1": {
+                    "summary": "Success",
+                    "value": {
+                      "status": 1,
+                      "msg": "¡Registrado correctamente!",
+                      "status_code": 201
+                    }
+                  },
+                  "2": {
+                    "summary": "Error Validation",
+                    "value": {
+                      "message": "El campo {} es obligatorio. ",
+                      "status_code": 422
+                    }
+                  },
+                  "3": {
+                    "summary": "Error Validation Password Confirmation",
+                    "value": {
+                      "message": "La confirmación de password no coincide.",
+                      "status_code": 422
+                    }
+                  },
+                  "4": {
+                    "summary": "Error Validation Email",
+                    "value": {
+                      "message": "El email ya esta en uso.",
+                      "status_code": 422
+                    }
+                  }
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/login": {
+      "post": {
+        "summary": "Login",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "Auth"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              },
+              "example": {
+                "email": "milagros2@gmail.com",
+                "password": "mili123"
+              }
+            }
+          }
+        },
+        "responses": {
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "examples": {
+                  "1": {
+                    "summary": "Success Login",
+                    "value": {
+                      "status": 1,
+                      "msg": "¡Logueado con éxito!",
+                      "access_token": "4|C8fMwHwybQtPnvC6VVcOiwjHffawt5zZvEwGhK2u9758f197",
+                      "status_code": 200
+                    }
+                  },
+                  "2": {
+                    "summary": "Error Validation Password",
+                    "value": {
+                      "status": 0,
+                      "msg": "La clave es incorrecta",
+                      "status_code": 422
+                    }
+                  },
+                  "3": {
+                    "summary": "Error Validation Email",
+                    "value": {
+                      "status": 0,
+                      "msg": "No estas registrado.",
+                      "status_code": 422
+                    }
+                  }
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/user-profile": {
+      "get": {
+        "summary": "View Profile",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "Auth"
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "Bearer 8|Vxngt1FiTQQ4AyGbrPSeIIoRc58LanlZMQg98ORi643f7852",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              },
+              "examples": {}
+            }
+          }
+        },
+        "responses": {
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "examples": {
+                  "1": {
+                    "summary": "Success View Perfil",
+                    "value": {
+                      "status": 1,
+                      "msg": "Perfil del usuario",
+                      "data": {
+                        "id": 2,
+                        "name": "mili",
+                        "email": "milagros2@gmail.com",
+                        "password": "$2y$10$BdDV4dFvSCRbtdy8a7A4FO7cQc4NS1voYJ5f.r9ew579dV8zQ/IyC"
+                      },
+                      "status_code": 200
+                    }
+                  },
+                  "2": {
+                    "summary": "Error Authentication",
+                    "value": {
+                      "message": "Unauthenticated.",
+                      "status_code": 401
+                    }
+                  }
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/logout": {
+      "get": {
+        "summary": "Logout",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "Auth"
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "Bearer 9|AAyTiiuCEXt2wBZJU1FtS63Pf3m2cTW39UjKASdr97dbcd62",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "examples": {
+                  "1": {
+                    "summary": "Success Logout",
+                    "value": {
+                      "status": 1,
+                      "msg": "¡Sesión cerrada con éxito!",
+                      "status_code": 200
+                    }
+                  },
+                  "2": {
+                    "summary": "Error Authentication",
+                    "value": {
+                      "message": "Unauthenticated.",
+                      "status_code": 401
+                    }
+                  }
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    }
+  },
+  "components": {
+    "schemas": {},
+    "securitySchemes": {}
+  },
+  "servers": [],
+  "security": []
+}
