@@ -7,177 +7,109 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\RegisterRequest;
+use Illuminate\Support\Facades\Log;
 
 // Utilizo 4 funciones para este proyecto: registro, login, perfil y logout
 
 
 class UserController extends Controller
 {
-    /*
-
-         public function register(Request $request)
-    {
-
-        // valido primero que los datos sean correctos
-        $request->validate([
-
-            'name' => 'required',
-
-            'email' => 'required|email|unique:users',
-
-            'password' => 'required|confirmed',
-
-            'password_confirmation' => 'required|same:password'
-
-        ]);
-
-        // si los datos son correctos, se crea el registro
-        $user = new User();
-
-        $user->name = $request->name;
-
-        $user->email = $request->email;
-
-        $user->password = Hash::make($request->password);
-
-
-        $user->save();
-
-
-        // mensaje:
-
-        return response()->json([
-
-            "status" => 1,
-
-            "msg" => "Registrado!"
-
-        ]);
-
-
-    }
-
-      */    
-
+      
       public function register(RegisterRequest $request)
-      {
+    {
+        try {
+            $validated = $request->validated();
 
-        // valido los datos del register request
-        $validated = $request->validated();
+            User::create([
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'password' => Hash::make($validated['password']),
+            ]);
 
-        User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
-        ]);
-
-        return response()->json([
-            "status" => 1,
-            "msg" => "Registrado!"
-        ]);
-
-
-      }
+            return response()->json([
+                "status" => 1,
+                "msg" => "¡Registrado correctamente!"
+            ]);
+        } catch (\Throwable $th) {
+            Log::error("Error en registro: " . $th->getMessage());
+            return response()->json([
+                "status" => 0,
+                "msg" => "Hubo un error al registrarse."
+            ], 500);
+        }
+    }
    
 
-    public function login(Request $request)
+     public function login(Request $request)
     {
-        // validacion de que ingrese el email y la clave
-        $request->validate([
+        try {
+            $request->validate([
+                'email' => 'required|email',
+                'password' => 'required'
+            ]);
 
-            'email' => 'required|email',
+            $user = User::where("email", $request->email)->first();
 
-            'password' => 'required'
-
-        ]);
-
-
-        // verifico que el usuario ya esta registrado
-        // comparo el email ingresado
-        $user = User::where("email", "=", $request->email)->first();
-
-        // comparo
-        // isset determina si una variable esta definida y no es del tipo null
-        if (isset($user->id)) {
-            
-            if (Hash::check($request->password, $user->password)) 
-            {
-                
-                // creo el token
+            if ($user && Hash::check($request->password, $user->password)) {
                 $token = $user->createToken("auth_token")->plainTextToken;
 
                 return response()->json([
-
                     "status" => 1,
-
-                    "msg" => "Logueado!",
-
+                    "msg" => "¡Logueado con éxito!",
                     "access_token" => $token
-
                 ]);
-
-            }else{
-                // si la contraseña ingresada no es correcta
-            
-                return response()->json([
-
-                    "status" => 0,
-
-                    "msg" => "La clave es incorrecta"
-
-                ], 404);
-                
             }
 
-            
-        }else{
-            // si el usuario no esta registrado
             return response()->json([
-
                 "status" => 0,
-
-                "msg" => "No estas registrado"
-
-            ], 404);
-
+                "msg" => $user ? "La clave es incorrecta" : "No estás registrado"
+            ], 401);
+        } catch (\Throwable $th) {
+            Log::error("Error en login: " . $th->getMessage());
+            return response()->json([
+                "status" => 0,
+                "msg" => "Hubo un error al iniciar sesión."
+            ], 500);
         }
-
     }
 
 
 
     public function profile(Request $request)
     {
-
-        //dd($request->user());
-        return response()->json([
-
-            "status" => 0,
-
-            "msg" => "Acerca del perfil",
-
-            "data" => auth()->user()
-
-        ]);
-
+        try {
+            return response()->json([
+                "status" => 1,
+                "msg" => "Perfil del usuario",
+                "data" => $request->user()
+            ]);
+        } catch (\Throwable $th) {
+            Log::error("Error en perfil: " . $th->getMessage());
+            return response()->json([
+                "status" => 0,
+                "msg" => "Hubo un error al obtener el perfil."
+            ], 500);
+        }
     }
 
 
 
     public function logout()
     {
+        try {
+            auth()->user()->tokens()->delete();
 
-        // elimino el token
-        auth()->user()->tokens()->delete();
-        
-        return response()->json([
-
-            "status" => 1,
-
-            "msg" => "Logout"
-
-        ]);
-
+            return response()->json([
+                "status" => 1,
+                "msg" => "¡Sesión cerrada con éxito!"
+            ]);
+        } catch (\Throwable $th) {
+            Log::error("Error en logout: " . $th->getMessage());
+            return response()->json([
+                "status" => 0,
+                "msg" => "Hubo un error al cerrar sesión."
+            ], 500);
+        }
     }
 
 }
